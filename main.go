@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"secondhand-marketplace-api/config"
-	"secondhand-marketplace-api/routes"
+	"gdg-secondhand-marketplace-api/config"
+	"gdg-secondhand-marketplace-api/routes"
 	
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {

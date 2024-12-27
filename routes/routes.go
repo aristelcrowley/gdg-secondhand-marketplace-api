@@ -10,27 +10,26 @@ import (
 func SetupRoutes(app *fiber.App) {
 	app.Post("/login", controllers.Login)
 
-	protected := app.Group("/api", middlewares.CheckAuth)
+	protected := app.Group("/api", middlewares.Protect)
 
+	protected.Post("/users", controllers.PostUser)  
 	protected.Get("/users", controllers.GetUsers)  
-	protected.Get("/user", controllers.GetUser)  
-	protected.Put("/user", controllers.UpdateUser)
-	protected.Delete("/user/:id", controllers.DeleteUser)  
+	protected.Get("/users/:id", controllers.GetUserByID)  
+	protected.Put("/users/:id", controllers.PutUser)
+	protected.Delete("/users/:id", controllers.DeleteUser)  
 
+	protected.Post("/categories", controllers.PostCategory) 
 	protected.Get("/categories", controllers.GetCategories)
-	protected.Post("/categories", controllers.CreateCategory) 
-	protected.Put("/categories/:id", controllers.UpdateCategory) 
+	protected.Put("/categories/:id", controllers.PutCategory) 
 	protected.Delete("/categories/:id", controllers.DeleteCategory) 
 
-	
+	protected.Post("/items", controllers.PostItem)
 	protected.Get("/items", controllers.GetItems)
-	protected.Post("/items", controllers.CreateItem)
-	protected.Put("/items/:id", controllers.UpdateItem)  
-	protected.Delete("/items/:id", controllers.DeleteItem
+	protected.Put("/items/:id", controllers.PutItem)  
+	protected.Delete("/items/:id", controllers.DeleteItem)
 
-
+	protected.Post("/orders", controllers.PostOrder)
 	protected.Get("/orders", controllers.GetOrders)
-	protected.Post("/orders", controllers.CreateOrder)
-	protected.Put("/orders/:id", controllers.UpdateOrder) 
+	protected.Put("/orders/:id", controllers.PutOrder) 
 	protected.Delete("/orders/:id", controllers.DeleteOrder) 
 }

@@ -7,26 +7,18 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	
-	"github.com/joho/godotenv"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	// Get DB connection details from environment variables
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
+		getEnvOrDefault("DB_USER", "root"),
+		getEnvOrDefault("DB_PASSWORD", ""),
+		getEnvOrDefault("DB_HOST", "127.0.0.1"),
+		getEnvOrDefault("DB_PORT", "3306"),
+		getEnvOrDefault("DB_NAME", "testdb"),
 	)
 
 	// Connect to MySQL database using GORM
@@ -36,4 +28,12 @@ func ConnectDatabase() {
 	}
 
 	DB = db
+}
+
+func getEnvOrDefault(key string, defaultValue string) string {
+	value, exists := os.LookupEnv(key)
+	if !exists {
+		return defaultValue
+	}
+	return value
 }
