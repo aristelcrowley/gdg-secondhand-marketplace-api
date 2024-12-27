@@ -83,5 +83,5 @@ func DeleteCategory(c *fiber.Ctx) error {
 			"error": "Error deleting category",
 		})
 	}
-	return c.SendStatus(fiber.StatusNoContent)
+	return c.SendString("Category deleted")
 }

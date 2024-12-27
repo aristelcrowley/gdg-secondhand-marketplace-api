@@ -113,5 +113,5 @@ func DeleteItem(c *fiber.Ctx) error {
 			"error": "Error deleting item",
 		})
 	}
-	return c.SendStatus(fiber.StatusNoContent)
+	return c.SendString("Item deleted")
 }

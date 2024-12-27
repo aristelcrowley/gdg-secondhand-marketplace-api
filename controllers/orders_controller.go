@@ -113,5 +113,5 @@ func DeleteOrder(c *fiber.Ctx) error {
 			"error": "Error deleting order",
 		})
 	}
-	return c.SendStatus(fiber.StatusNoContent)
+	return c.SendString("Order deleted")
 }
