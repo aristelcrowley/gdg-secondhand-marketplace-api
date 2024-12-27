@@ -80,20 +80,15 @@ func PutUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+	if !middlewares.IsAdmin(c) {
+		return c.Status(fiber.StatusUnauthorized).SendString("You are not authorized to delete users")
+	}
+
+	id := c.Params("id") 
 	var user models.User
+
 	if err := config.DB.First(&user, id).Error; err != nil {
 		return c.Status(404).SendString("User not found")
-	}
-
-	userID := c.Locals("userID").(int)
-
-	if id != strconv.Itoa(userID) && !middlewares.IsAdmin(c) {
-		return c.Status(403).SendString("You are not authorized to delete this user's profile")
-	}
-
-	if err := config.DB.Delete(&user).Error; err != nil {
-		return c.Status(500).SendString("Error deleting user")
 	}
 
 	return c.SendString("User deleted")

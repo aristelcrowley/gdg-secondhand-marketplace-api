@@ -10,23 +10,31 @@ import (
 
 func PostItem(c *fiber.Ctx) error {
 	var item models.Item
-
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Cannot parse the body: " + err.Error(),
+			"error": "Cannot parse the body",
 		})
 	}
 
-	userID := c.Locals("userID").(int)
+	userID := c.Locals("userID").(int) 
 
-	item.UserID = userID
+	if item.UserID == 0 || item.CategoryID == 0{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "You need to input the user_id and category_id",
+		})
+	}
+
+	if item.UserID != userID && !middlewares.IsAdmin(c) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "You can only create items for yourself",
+		})
+	}
 
 	if err := config.DB.Create(&item).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Error creating item: " + err.Error(),
+			"error": "Error creating item",
 		})
 	}
-
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
 

@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"strconv"
-
 	"gdg-secondhand-marketplace-api/config"
 	"gdg-secondhand-marketplace-api/middlewares"
 	"gdg-secondhand-marketplace-api/models"
@@ -19,6 +17,13 @@ func PostOrder(c *fiber.Ctx) error {
 	}
 
 	userID := c.Locals("userID").(int) 
+
+	if order.UserID == 0 || order.ItemID == 0{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "You need to input the user_id and item_id",
+		})
+	}
+
 
 	if order.UserID != userID && !middlewares.IsAdmin(c) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -57,37 +62,33 @@ func GetOrders(c *fiber.Ctx) error {
 }
 
 func PutOrder(c *fiber.Ctx) error {
-	id := c.Params("id")
-
-	orderID, err := strconv.Atoi(id)
-	if err != nil {
-		return c.Status(400).SendString("Invalid order ID")
-	}
-
+	orderID := c.Params("id")
 	var order models.Order
 	if err := config.DB.First(&order, orderID).Error; err != nil {
-		return c.Status(404).SendString("Order not found")
-	}
-
-	userID := c.Locals("userID").(int) 
-	if order.UserID != userID && !middlewares.IsAdmin(c) {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "You can only update your own orders",
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Order not found",
 		})
 	}
 
-	var updatedOrder models.Order
-	if err := c.BodyParser(&updatedOrder); err != nil {
-		return c.Status(400).SendString("Invalid request body")
-	}
-	
-	order.ItemID = updatedOrder.ItemID
-	order.ItemAmount = updatedOrder.ItemAmount
-	order.PriceTotal = updatedOrder.PriceTotal
-	if err := config.DB.Save(&order).Error; err != nil {
-		return c.Status(500).SendString("Error updating order")
+	userID := c.Locals("userID").(int)
+
+	if order.UserID != userID && !middlewares.IsAdmin(c) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "You can only modify your own orders or be an admin",
+		})
 	}
 
+	if err := c.BodyParser(&order); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cannot parse the body",
+		})
+	}
+
+	if err := config.DB.Save(&order).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error updating order",
+		})
+	}
 	return c.JSON(order)
 }
 
