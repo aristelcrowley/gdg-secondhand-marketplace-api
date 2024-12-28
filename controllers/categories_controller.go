@@ -10,7 +10,7 @@ import (
 
 func PostCategory(c *fiber.Ctx) error {
 	if !middlewares.IsAdmin(c) {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "You must be an admin to create a category",
 		})
 	}
@@ -42,7 +42,7 @@ func GetCategories(c *fiber.Ctx) error {
 
 func PutCategory(c *fiber.Ctx) error {
 	if !middlewares.IsAdmin(c) {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "You must be an admin to update a category",
 		})
 	}
@@ -71,7 +71,7 @@ func PutCategory(c *fiber.Ctx) error {
 
 func DeleteCategory(c *fiber.Ctx) error {
 	if !middlewares.IsAdmin(c) {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "You must be an admin to delete a category",
 		})
 	}

@@ -19,7 +19,7 @@ func PostOrder(c *fiber.Ctx) error {
 	userID := c.Locals("userID").(int) 
 
 	if order.UserID == 0 || order.ItemID == 0{
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "You need to input the user_id and item_id",
 		})
 	}
