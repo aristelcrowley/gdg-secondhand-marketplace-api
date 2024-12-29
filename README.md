@@ -17,7 +17,7 @@ RESTful API for a secondhand marketplace. Users can manage items, orders, users,
   - Admins can CRUD all orders.
 
 - **Category Management:**
-  - Users can view all categories.
+  - Users can only view all categories.
   - Admins can CRUD all categories.
 
 ## How to Run
@@ -30,8 +30,8 @@ RESTful API for a secondhand marketplace. Users can manage items, orders, users,
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/secondhand-marketplace-api.git
-   cd secondhand-marketplace-api
+   git clone https://github.com/aristelcrowley/gdg-secondhand-marketplace-api
+   cd gdg-secondhand-marketplace-api
    ```
 
 2. Install dependencies:
